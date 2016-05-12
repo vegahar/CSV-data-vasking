@@ -13,10 +13,10 @@ module lol =
     let url = "http://ichart.finance.yahoo.com/table.csv?s=STO"
     
     [<Literal>]
-    let url1 = "http://ichart.finance.yahoo.com/table.csv?s=DNB"
+    let url1 = "http://ichart.finance.yahoo.com/table.csv?s=DNB.OL"
     
     [<Literal>]
-    let url2 = "http://ichart.finance.yahoo.com/table.csv?s=TEL"
+    let url2 = "http://ichart.finance.yahoo.com/table.csv?s=TEL.OL"
     
     type Statoil = CsvProvider<url, CacheRows=false>
     
