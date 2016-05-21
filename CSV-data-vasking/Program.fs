@@ -14,16 +14,13 @@ type Stock =
       close : Close
       volume : float }
 
-let buybuy (stock : Stock) = stock.close <= stock.openn
-let sellsell (stock : Stock) = stock.close > stock.openn
-
 type ClassifiedStock = 
-    | Buy
-    | Sell
+    | StockIsDown
+    | StockIsUp
 
 let classifyStock (stock : Stock) : ClassifiedStock = 
-    if stock.close <= stock.openn then Buy
-    else Sell
+    if stock.close <= stock.openn then StockIsDown
+    else StockIsUp
 
 let csv = CsvFile.Load("http://ichart.finance.yahoo.com/table.csv?s=AAPL")
 let headerRow = csv.Headers
@@ -42,11 +39,13 @@ let classifiedStocks = Seq.map classifyStock stocks
 
 let matchStock (stock : ClassifiedStock) = 
     match stock with
-    | Buy -> "Buy buy!!"
-    | Sell -> "Sell sell!!"
+    | StockIsDown -> "Buy buy!!"
+    | StockIsUp -> "Sell sell!!"
 
-for stock in classifiedStocks do
-    printfn "%A" (matchStock stock)
-//for stock in stocks do
-//  printfn "%A" (stock.GetType().Name)
-//Date,Open,High,Low,Close,Volume,Adj Close
+let groupedBy = 
+    classifiedStocks
+    |> Seq.map matchStock
+    |> Seq.groupBy (fun word -> word)
+    |> Seq.map (fun (key, value) -> key, Seq.length value)
+
+printfn "%A" groupedBy

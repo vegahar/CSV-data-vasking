@@ -134,7 +134,6 @@ for stock in stocks do
 //Date,Open,High,Low,Close,Volume,Adj Close
 
 =====================================
-
 open System
 open FSharp.Data
 open FSharp.Data.CsvExtensions
@@ -152,18 +151,18 @@ type Stock =
       volume : float }
 
 type ClassifiedStock =
-    | Buy
-    | Sell
+    | StockIsDown
+    | StockIsUp
 
 let classifyStock (stock : Stock) : ClassifiedStock =
-    if stock.close <= stock.openn then Buy
-    else Sell
+    if stock.close <= stock.openn then StockIsDown
+    else StockIsUp
 
 let csv = CsvFile.Load("http://ichart.finance.yahoo.com/table.csv?s=AAPL")
 let headerRow = csv.Headers
 let rows = csv.Rows
 
-let mapRowToStock (row : CsvRow) = 
+let mapRowToStock (row : CsvRow) =
     { date = row?Date.AsDateTime()
       openn = row?Open.AsFloat()
       high = row?High.AsFloat()
@@ -176,8 +175,13 @@ let classifiedStocks = Seq.map classifyStock stocks
 
 let matchStock (stock : ClassifiedStock) =
     match stock with
-    | Buy -> "Buy buy!!"
-    | Sell -> "Sell sell!!"
+    | StockIsDown -> "Buy buy!!"
+    | StockIsUp -> "Sell sell!!"
 
-for stock in classifiedStocks do
-    printfn "%A" (matchStock stock)
+let groupedBy =
+    classifiedStocks
+    |> Seq.map matchStock
+    |> Seq.groupBy (fun word -> word)
+    |> Seq.map (fun (key, value) -> key, Seq.length value)
+
+printfn "%A" groupedBy
