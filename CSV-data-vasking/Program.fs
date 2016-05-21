@@ -1,24 +1,30 @@
-﻿open FSharp.Data
-open System
+﻿open System
+open FSharp.Data
+open FSharp.Data.CsvExtensions
 
-let urlBase = "http://ichart.finance.yahoo.com/table.csv?s="
-let companyStockNames = [ "STO"; "DNB"; "TEL" ]
-let companyStockUrl company : string = urlBase + company
-let literals = List.map companyStockUrl companyStockNames
+type Stock = 
+    { date : DateTime
+      openn : float
+      high : float
+      low : float
+      close : float
+      volume : float }
 
-for lit in literals do
-    printfn "%s" (lit)
+let csv = CsvFile.Load("http://ichart.finance.yahoo.com/table.csv?s=AAPL")
+let headerRow = csv.Headers
+let rows = csv.Rows
 
-let readCsvUrl (url : string) = CsvFile.Load(url).Cache()
-let csvFiles = List.map readCsvUrl literals
+let mapRowToStock (row : CsvRow) = 
+    { date = row?Date.AsDateTime()
+      openn = row?Open.AsFloat()
+      high = row?High.AsFloat()
+      low = row?Low.AsFloat()
+      close = row?Close.AsFloat()
+      volume = row?Volume.AsFloat() }
 
-let firstResult = 
-    csvFiles
-    |> Seq.map (fun file -> file.Rows)
-    |> Seq.map (fun rows -> Seq.head rows)
+let stocks = Seq.map mapRowToStock rows
 
-for a in firstResult do
-    printfn "%s" (a.GetColumn("High"))
+for stock in stocks do
+    printfn "%A" (stock.GetType().Name)
 
-[<EntryPoint>]
-let main argv = 0
+//Date,Open,High,Low,Close,Volume,Adj Close
