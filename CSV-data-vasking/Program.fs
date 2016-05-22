@@ -1,15 +1,16 @@
 ﻿namespace Test
 
-open System
-open FSharp.Data
-open FSharp.Data.CsvExtensions
 open Vasking
 open Stock
 open Visualisering
 
 module Program = 
+
+    //http://fsharp.github.io/FSharp.Data/
+    //http://fslab.org/FSharp.Charting/
+
     [<EntryPoint>]
     let main argv = 
         Visualisering.run; 
-        //Stock.run
+        Stock.run
         0
