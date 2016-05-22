@@ -41,12 +41,16 @@ module Stock =
         |> Seq.groupBy (fun word -> word)
         |> Seq.map (fun (key, value) -> key, Seq.length value)
     
+    // alternative  
+    let matchingWithMatch classifiedStock = 
+        match classifiedStock with
+        | StockIsDown -> "Dårlig dag"
+        | StockIsUp -> "Bra dag"
+    
     let classifiedStocksNotReadable = 
         Seq.map (fun (key, value) -> key, Seq.length value) 
             (Seq.groupBy (fun word -> word) 
-                 (Seq.map (function 
-                      | StockIsDown -> "Dårlig dag"
-                      | StockIsUp -> "Bra dag") (Seq.map classifyStock (Seq.map mapRowToStock csv))))
+                 (Seq.map matchingWithMatch (Seq.map classifyStock (Seq.map mapRowToStock csv))))
     
     let run = 
         printfn "%A" classifiedStocks
