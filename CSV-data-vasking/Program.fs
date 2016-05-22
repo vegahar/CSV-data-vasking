@@ -13,4 +13,5 @@ module Program =
     let main argv = 
         Visualisering.run; 
         Stock.run
+        Windowed.run
         0

@@ -25,6 +25,8 @@ module Stock =
           low = row?Low.AsFloat()
           close = row?Close.AsFloat() }
     
+    let stocks = Seq.map mapRowToStock csv
+    
     let classifyStock (stock : Stock) : ClassifiedStock = 
         if stock.close <= stock.openn then StockIsDown
         else StockIsUp
