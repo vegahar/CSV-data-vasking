@@ -11,5 +11,5 @@ module Program =
     [<EntryPoint>]
     let main argv = 
         Visualisering.run; 
-        Stock.run
+        //Stock.run
         0
